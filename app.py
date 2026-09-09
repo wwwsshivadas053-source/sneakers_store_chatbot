@@ -526,13 +526,35 @@ def chat_bot():
     })
 
 
-# --- STARTUP SEED ---
+# --- STARTUP SEED & BOT AUTO-SPAWNER FOR SINGLE WEB SERVICE DEPLOYMENT ---
+import subprocess
+import threading
+
+_bot_started = False
+
+def start_telegram_bot_process():
+    global _bot_started
+    if _bot_started or os.getenv("DISABLE_TELEGRAM_BOT_SPAWN") == "true":
+        return
+    _bot_started = True
+    try:
+        def _spawn():
+            print("[SERVER] Spawning Telegram bot.py background process for Single Web Service deployment...")
+            subprocess.Popen(["python", "bot.py"])
+            
+        t = threading.Thread(target=_spawn, daemon=True)
+        t.start()
+    except Exception as e:
+        print(f"[SERVER ERROR] Failed to auto-start Telegram bot process: {e}")
+
 with app.app_context():
     db.create_all()
     if Product.query.count() == 0:
         from seed import seed_database
         seed_database()
+    start_telegram_bot_process()
 
 if __name__ == '__main__':
     print("[SERVER] Starting Sneaker Store AI Backend on http://127.0.0.1:5000 ...")
     app.run(host='0.0.0.0', port=5000, debug=True)
+
