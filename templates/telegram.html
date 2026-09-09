@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Assistant | KICKS AI Sneaker Boutique</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .tg-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            align-items: flex-start;
+        }
+        .tg-phone-mockup {
+            background: #17212B;
+            border: 2px solid #2B394A;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            height: 680px;
+            max-height: 85vh;
+            position: relative;
+        }
+        .tg-phone-header {
+            background: #242F3D;
+            padding: 0.8rem 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            border-bottom: 1px solid #17212B;
+            flex-shrink: 0;
+        }
+        .tg-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #2AABEE;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #FFF;
+            font-weight: 700;
+        }
+        .tg-messages-area {
+            flex-grow: 1;
+            padding: 1rem;
+            overflow-y: auto;
+            background: #0E1621;
+            display: flex;
+            flex-direction: column;
+        }
+        .tg-docked-keyboard {
+            background: #17212B;
+            border-top: 1px solid #242F3D;
+            padding: 0.6rem 0.8rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        .tg-keyboard-btn {
+            background: #242F3D;
+            color: #F5F5F5;
+            border: 1px solid #2B394A;
+            padding: 0.55rem 0.6rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+        .tg-keyboard-btn:hover {
+            background: #2AABEE;
+            color: #FFF;
+            border-color: #2AABEE;
+        }
+        .tg-input-bar {
+            padding: 0.75rem 0.9rem;
+            background: #17212B;
+            border-top: 1px solid #2B394A;
+            display: flex;
+            gap: 0.6rem;
+            flex-shrink: 0;
+        }
+        .tg-input-bar input {
+            flex-grow: 1;
+            background: #242F3D;
+            border: none;
+            border-radius: 20px;
+            padding: 0.6rem 1rem;
+            color: #FFF;
+            outline: none;
+            font-size: 0.88rem;
+        }
+        .tg-input-bar button {
+            background: #2AABEE;
+            color: #FFF;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        @media(max-width:900px){
+            .tg-container { grid-template-columns: 1fr; gap: 2rem; }
+            .tg-phone-mockup { height: 600px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="glass-header">
+        <nav class="navbar">
+            <a href="/" class="brand-logo">
+                <i class="fa-solid fa-shoe-prints" style="color:var(--accent-orange);"></i>
+                KICKS<span>.AI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link"><i class="fa-solid fa-store"></i> Shop Catalog</a></li>
+                <li><a href="/telegram" class="nav-link active"><i class="fa-brands fa-telegram"></i> Telegram Assistant</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="tg-container">
+        <!-- Live Telegram Simulator Mockup -->
+        <div>
+            <div style="margin-bottom:1rem;">
+                <h2><i class="fa-brands fa-telegram" style="color:#2AABEE;"></i> TELEGRAM ASSISTANT CONCIERGE</h2>
+                <p style="color:var(--text-muted); font-size:0.9rem;">Chat with KICKS AI directly on Telegram for real-time sneaker recommendations</p>
+            </div>
+
+            <div class="tg-phone-mockup">
+                <div class="tg-phone-header">
+                    <div class="tg-avatar"><i class="fa-solid fa-robot"></i></div>
+                    <div>
+                        <h4 style="color:#FFF; font-size:0.95rem;">@Eg_chatbot</h4>
+                        <span style="font-size:0.75rem; color:#2AABEE;">bot • 24/7 AI Online</span>
+                    </div>
+                </div>
+
+                <!-- Chat Messages Scroll Area -->
+                <div class="tg-messages-area" id="tgMessagesContainer">
+                    <!-- Dynamic Telegram chat bubbles -->
+                </div>
+
+                <!-- Pinned Docked Telegram Keyboard -->
+                <div class="tg-docked-keyboard">
+                    <button class="tg-keyboard-btn tg-cmd-btn" data-cmd="/start">⚡ /start</button>
+                    <button class="tg-keyboard-btn tg-cmd-btn" data-cmd="🔥 Browse Catalog">🔥 Browse Catalog</button>
+                    <button class="tg-keyboard-btn tg-cmd-btn" data-cmd="Air Jordan 1 Sizing Advice">📏 Sizing Guide</button>
+                    <button class="tg-keyboard-btn tg-cmd-btn" data-cmd="Show me Nike under $200">💰 Under $200</button>
+                </div>
+
+                <!-- Text Input Bar -->
+                <div class="tg-input-bar">
+                    <input type="text" id="tgInput" placeholder="Write a message or type /start...">
+                    <button id="tgSendBtn"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Client Feature Overview -->
+        <div>
+            <span class="chip" style="color:#2AABEE; border-color:#2AABEE; font-size:0.8rem; margin-bottom:1rem; display:inline-block;">
+                ⚡ 24/7 AUTOMATED SNEAKER CONCIERGE
+            </span>
+            <h2 style="font-size:2.2rem; margin-bottom:1rem;">SHOP SNEAKERS INSIDE TELEGRAM</h2>
+            <p style="color:var(--text-muted); font-size:1.02rem; line-height:1.7; margin-bottom:1.5rem;">
+                Our AI Assistant connects seamlessly with Telegram. Customers can browse stock, check sizes, ask fit advice, and place orders directly without leaving their favorite messaging app.
+            </p>
+            
+            <a href="https://t.me/Eg_chatbot" target="_blank" class="btn-primary" style="background:#2AABEE; box-shadow: 0 4px 15px rgba(42,171,238,0.4); margin-bottom:2rem; padding:0.85rem 1.6rem; display:inline-flex; width:auto;">
+                <i class="fa-brands fa-telegram" style="font-size:1.2rem;"></i> Open @Eg_chatbot in Telegram App
+            </a>
+
+            <div style="display:flex; flex-direction:column; gap:1.2rem;">
+                <div class="glass-panel" style="padding:1.2rem; display:flex; gap:1rem; align-items:center;">
+                    <div style="width:45px; height:45px; border-radius:12px; background:rgba(42,171,238,0.15); color:#2AABEE; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div>
+                        <h4 style="color:#FFF;">Instant Stock Verification</h4>
+                        <p style="font-size:0.85rem; color:var(--text-muted);">Real-time inventory lookup with live size availability</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel" style="padding:1.2rem; display:flex; gap:1rem; align-items:center;">
+                    <div style="width:45px; height:45px; border-radius:12px; background:rgba(255,85,0,0.15); color:var(--accent-orange); display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">
+                        <i class="fa-solid fa-ruler-combined"></i>
+                    </div>
+                    <div>
+                        <h4 style="color:#FFF;">Natural Sizing Recommendations</h4>
+                        <p style="font-size:0.85rem; color:var(--text-muted);">Model-specific sizing guidance for Yeezys, Jordans, and Dunks</p>
+                    </div>
+                </div>
+
+                <div class="glass-panel" style="padding:1.2rem; display:flex; gap:1rem; align-items:center;">
+                    <div style="width:45px; height:45px; border-radius:12px; background:rgba(16,185,129,0.15); color:#10B981; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;">
+                        <i class="fa-solid fa-truck-ramp-box"></i>
+                    </div>
+                    <div>
+                        <h4 style="color:#FFF;">Direct Order Collection</h4>
+                        <p style="font-size:0.85rem; color:var(--text-muted);">Automated shipping detail collection & owner notification</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/telegram_sim.js') }}"></script>
+</body>
+</html>

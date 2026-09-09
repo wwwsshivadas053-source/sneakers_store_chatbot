@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KICKS AI | International Sneaker Boutique & Store Assistant</title>
+    <meta name="description" content="AI-Powered Sneaker Store Assistant. Discover authentic sneakers, sizing recommendations, and 24/7 instant chat ordering.">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Header / Glass Navbar -->
+    <header class="glass-header">
+        <nav class="navbar">
+            <a href="/" class="brand-logo">
+                <i class="fa-solid fa-shoe-prints" style="color:var(--accent-orange);"></i>
+                KICKS<span>.AI</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link active"><i class="fa-solid fa-store"></i> Shop Catalog</a></li>
+                <li><a href="/telegram" class="nav-link"><i class="fa-brands fa-telegram"></i> Telegram Assistant</a></li>
+            </ul>
+            <div class="nav-actions" id="navAuthActions">
+                <!-- Loaded dynamically by app.js -->
+                <a href="/login" class="btn-secondary">
+                    <i class="fa-solid fa-user"></i> Sign In
+                </a>
+                <button class="btn-primary" id="headerChatBtn" onclick="document.getElementById('aiWidgetTrigger').click()">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> AI Assistant
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Showcase Section -->
+    <section class="hero-section">
+        <div class="hero-content">
+            <span class="chip" style="color:var(--accent-orange); border-color:var(--accent-orange); font-size:0.8rem; margin-bottom:1rem; display:inline-flex;">
+                ⚡ 24/7 AI-POWERED SNEAKER CONCIERGE
+            </span>
+            <h1>ELEVATE YOUR <span>KICKS</span> GAME</h1>
+            <p class="hero-subtitle">
+                Experience next-gen luxury sneaker shopping. Powered by an intelligent AI store assistant for natural sizing advice, live stock verification, and instant 1-click orders.
+            </p>
+            <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+                <button class="btn-primary" onclick="document.getElementById('catalogSection').scrollIntoView({behavior: 'smooth'})">
+                    <i class="fa-solid fa-bag-shopping"></i> Explore Inventory
+                </button>
+                <a href="https://t.me/Eg_chatbot" target="_blank" class="btn-secondary" style="background:#2AABEE; color:#FFF; border:none;">
+                    <i class="fa-brands fa-telegram"></i> Open Telegram App
+                </a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-item">
+                    <h3>100%</h3>
+                    <p>Authentic Sneakers</p>
+                </div>
+                <div class="stat-item">
+                    <h3>&lt; 2s</h3>
+                    <p>AI Response Time</p>
+                </div>
+                <div class="stat-item">
+                    <h3>24/7</h3>
+                    <p>Order Dispatch</p>
+                </div>
+            </div>
+        </div>
+        <div class="hero-media">
+            <div class="hero-sneaker-card">
+                <span class="hero-badge">🔥 TOP TRENDING SNEAKER</span>
+                <img src="https://images.unsplash.com/photo-1552346154-21d32810aba3?auto=format&fit=crop&w=800&q=80" alt="Air Jordan 1 Lost & Found" class="hero-sneaker-img">
+                <div style="padding: 1.2rem; background: rgba(10, 12, 18, 0.85); backdrop-filter: blur(10px);">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h3 style="font-size:1.15rem; color:#FFF;">Air Jordan 1 High OG</h3>
+                            <p style="font-size:0.85rem; color:var(--text-muted);">'Lost & Found' Chicago</p>
+                        </div>
+                        <span style="font-size:1.4rem; font-weight:800; color:var(--accent-orange);">$210.00</span>
+                    </div>
+                    <button class="btn-primary buy-btn" data-product-id="1" style="margin-top:0.8rem; width:100%; justify-content:center; padding:0.65rem;">
+                        <i class="fa-solid fa-bolt"></i> Instant Book Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catalog Section -->
+    <section class="catalog-section" id="catalogSection">
+        <div class="section-header">
+            <div class="section-title">
+                <h2>CURATED SNEAKER INVENTORY</h2>
+                <p>Browse authentic pairs with real-time stock and available sizes</p>
+            </div>
+            <div class="search-input-group">
+                <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                <input type="text" id="searchInput" placeholder="Search Jordan, Yeezy, Nike, Size...">
+            </div>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="glass-panel filter-bar">
+            <div class="brand-chips">
+                <button class="chip active" data-brand="All">All Brands</button>
+                <button class="chip" data-brand="Jordan">Jordan</button>
+                <button class="chip" data-brand="Nike">Nike</button>
+                <button class="chip" data-brand="Yeezy">Yeezy</button>
+                <button class="chip" data-brand="Adidas">Adidas</button>
+                <button class="chip" data-brand="New Balance">New Balance</button>
+                <button class="chip" data-brand="Asics">Asics</button>
+            </div>
+            <div style="font-size:0.85rem; color:var(--text-muted);">
+                <i class="fa-solid fa-truck-fast" style="color:var(--accent-orange);"></i> Free Express Shipping
+            </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div class="product-grid" id="productGrid">
+            <!-- Dynamic products rendered via app.js -->
+        </div>
+    </section>
+
+    <!-- Floating AI Widget Trigger -->
+    <button class="ai-widget-trigger" id="aiWidgetTrigger">
+        <span class="pulse-dot"></span>
+        <i class="fa-solid fa-robot"></i>
+        Ask KICKS AI Assistant
+    </button>
+
+    <!-- Drawer Overlay -->
+    <div class="drawer-overlay" id="drawerOverlay"></div>
+
+    <!-- AI Chat Drawer -->
+    <aside class="chat-drawer" id="chatDrawer">
+        <div class="chat-header">
+            <div class="chat-header-info">
+                <div class="bot-avatar">⚡</div>
+                <div>
+                    <h4 style="color:#FFF; font-size:1rem;">KICKS AI Concierge</h4>
+                    <p style="font-size:0.75rem; color:var(--accent-green);"><i class="fa-solid fa-circle" style="font-size:0.5rem;"></i> Online • Instant Sizing & Stock</p>
+                </div>
+            </div>
+            <button id="closeChatBtn" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="message-bubble bot">
+                👋 Hello! I am your <strong>AI Sneaker Store Assistant</strong>. Ask me anything about sneaker sizing, budget recommendations, or delivery details!
+            </div>
+        </div>
+
+        <div class="chat-input-area">
+            <input type="text" id="chatInput" placeholder="Ask 'What size for Air Jordan 1?' or 'Under $200'...">
+            <button class="btn-primary" id="sendChatBtn" style="padding:0.7rem 1.1rem;">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </aside>
+
+    <!-- Order Placement Modal -->
+    <div class="modal-window" id="orderModal">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+            <h3 style="color:#FFF;" id="modalProductTitle">Place Order</h3>
+            <button id="closeOrderModalBtn" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div style="display:flex; gap:1.2rem; margin-bottom:1.5rem; background:rgba(255,255,255,0.03); padding:1rem; border-radius:12px; border:1px solid var(--border-glass);">
+            <img id="modalProductImg" src="" style="width:80px; height:80px; object-fit:cover; border-radius:8px;">
+            <div>
+                <h4 id="modalProductTitleSub" style="color:#FFF;"></h4>
+                <div id="modalProductPrice" style="font-size:1.3rem; font-weight:800; color:var(--accent-orange);"></div>
+                <p style="font-size:0.8rem; color:var(--text-muted);">Stock available • Guaranteed Authentic</p>
+            </div>
+        </div>
+
+        <form id="orderForm">
+            <div class="form-group">
+                <label>Select Size</label>
+                <div id="modalSizeSelector" style="display:flex; gap:0.5rem; flex-wrap:wrap;"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Full Name</label>
+                <input type="text" id="custName" class="form-control" placeholder="e.g. Prajwal Sharma" required>
+            </div>
+
+            <div class="form-group">
+                <label>Phone Number (For Shipping SMS)</label>
+                <input type="tel" id="custPhone" class="form-control" placeholder="+1 (555) 000-1234" required>
+            </div>
+
+            <div class="form-group">
+                <label>Shipping Address</label>
+                <textarea id="custAddress" class="form-control" rows="2" placeholder="Street address, City, ZIP code" required></textarea>
+            </div>
+
+            <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:0.9rem; margin-top:0.5rem;">
+                <i class="fa-solid fa-check"></i> Confirm Order & Notify Store Owner
+            </button>
+        </form>
+    </div>
+
+    <!-- My Orders Modal -->
+    <div class="modal-window" id="myOrdersModal">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+            <h3 style="color:#FFF;"><i class="fa-solid fa-box-archive" style="color:var(--accent-orange);"></i> My Order History</h3>
+            <button id="closeMyOrdersModalBtn" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="form-group" style="margin-bottom:1.2rem;">
+            <label style="font-size:0.8rem;">Lookup Telegram or Web Orders by Phone Number</label>
+            <div style="display:flex; gap:0.5rem;">
+                <input type="tel" id="orderSearchPhoneInput" class="form-control" placeholder="Enter phone number (e.g. +1 555-0199)">
+                <button class="btn-primary" id="searchOrdersByPhoneBtn" style="padding:0.6rem 1rem; font-size:0.85rem;">
+                    <i class="fa-solid fa-magnifying-glass"></i> Search
+                </button>
+            </div>
+        </div>
+
+        <div id="myOrdersList">
+            <!-- Dynamically loaded -->
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div>
+            <div class="brand-logo" style="font-size:1.3rem;">KICKS<span>.AI</span></div>
+            <p style="margin-top:0.5rem; max-width:350px;">AI-Powered Sneaker Concierge & Retail Automation Platform.</p>
+        </div>
+        <div class="footer-links">
+            <a href="/privacy" style="color:var(--text-muted);">Privacy Policy</a>
+            <a href="/terms" style="color:var(--text-muted);">Terms & Conditions</a>
+            <a href="/telegram" style="color:var(--text-muted);">Telegram Assistant</a>
+        </div>
+        <div>
+            © 2026 KICKS AI Sneaker Store. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

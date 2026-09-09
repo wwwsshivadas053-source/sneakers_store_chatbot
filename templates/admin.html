@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | KICKS AI Store Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .admin-layout {
+            max-width: 1320px;
+            margin: 2rem auto;
+            padding: 0 1.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+        .stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-glass);
+            padding: 1.5rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(255, 85, 0, 0.15);
+            color: var(--accent-orange);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+        }
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .admin-table th, .admin-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-glass);
+        }
+        .admin-table th {
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
+            background: rgba(255, 255, 255, 0.02);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="glass-header">
+        <nav class="navbar">
+            <a href="/" class="brand-logo">
+                <i class="fa-solid fa-shoe-prints" style="color:var(--accent-orange);"></i>
+                KICKS<span>.ADMIN</span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="/" class="nav-link"><i class="fa-solid fa-store"></i> View Store</a></li>
+                <li><a href="/telegram" class="nav-link"><i class="fa-brands fa-telegram"></i> Telegram Simulator</a></li>
+                <li><a href="/admin" class="nav-link active"><i class="fa-solid fa-chart-line"></i> Dashboard</a></li>
+            </ul>
+            <div class="nav-actions">
+                <button class="btn-secondary" onclick="fetch('/api/auth/logout', {method:'POST'}).then(() => window.location.href='/login')">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="admin-layout">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:2rem;">
+            <div>
+                <h2>STORE EXECUTIVE DASHBOARD</h2>
+                <p style="color:var(--text-muted);">Real-time revenue metrics, product inventory management & order dispatch pipeline</p>
+            </div>
+            <button class="btn-primary" id="addProductBtn">
+                <i class="fa-solid fa-plus"></i> Add New Sneaker
+            </button>
+        </div>
+
+        <!-- Metric Cards -->
+        <div class="stats-grid" id="adminStatsRow">
+            <div class="stat-card">
+                <div>
+                    <p style="font-size:0.8rem; color:var(--text-dim); text-transform:uppercase;">Total Store Revenue</p>
+                    <h2 id="statTotalRevenue" style="font-size:1.8rem; color:var(--accent-orange);">$0.00</h2>
+                </div>
+                <div class="stat-icon"><i class="fa-solid fa-dollar-sign"></i></div>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <p style="font-size:0.8rem; color:var(--text-dim); text-transform:uppercase;">Total Orders</p>
+                    <h2 id="statTotalOrders" style="font-size:1.8rem;">0</h2>
+                </div>
+                <div class="stat-icon" style="background:rgba(139,92,246,0.15); color:var(--accent-purple);"><i class="fa-solid fa-box"></i></div>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <p style="font-size:0.8rem; color:var(--text-dim); text-transform:uppercase;">Total Products</p>
+                    <h2 id="statTotalProducts" style="font-size:1.8rem;">0</h2>
+                </div>
+                <div class="stat-icon" style="background:rgba(6,182,212,0.15); color:var(--accent-cyan);"><i class="fa-solid fa-socks"></i></div>
+            </div>
+
+            <div class="stat-card">
+                <div>
+                    <p style="font-size:0.8rem; color:var(--text-dim); text-transform:uppercase;">Low Stock Alerts</p>
+                    <h2 id="statLowStockCount" style="font-size:1.8rem;">0</h2>
+                </div>
+                <div class="stat-icon" style="background:rgba(239,68,68,0.15); color:#EF4444;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            </div>
+        </div>
+
+        <!-- Orders Pipeline Table -->
+        <section class="glass-panel" style="padding:1.5rem; margin-bottom:3rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
+                <h3><i class="fa-solid fa-cart-flatbed" style="color:var(--accent-orange);"></i> Incoming Orders Pipeline</h3>
+                <span class="chip" style="font-size:0.75rem;"><i class="fa-solid fa-arrows-rotate"></i> Auto-refreshing (10s)</span>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Order ID</th>
+                            <th>Customer Info</th>
+                            <th>Item Details</th>
+                            <th>Total Price</th>
+                            <th>Channel Source</th>
+                            <th>Order Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminOrdersTableBody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Products Inventory Table -->
+        <section class="glass-panel" style="padding:1.5rem;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.2rem;">
+                <h3><i class="fa-solid fa-boxes-stacked" style="color:var(--accent-purple);"></i> Product Catalog Inventory</h3>
+                <span style="font-size:0.85rem; color:var(--text-muted);">Manage price, stock levels & sizes</span>
+            </div>
+            <div style="overflow-x:auto;">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Brand</th>
+                            <th>Price</th>
+                            <th>Stock Count</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminProductsTableBody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <!-- Add / Edit Product Modal -->
+    <div class="modal-window" id="productModal">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1.5rem;">
+            <h3 style="color:#FFF;" id="productModalTitle">Add New Sneaker</h3>
+            <button id="closeProductModalBtn" style="background:none; border:none; color:var(--text-muted); font-size:1.2rem; cursor:pointer;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <form id="productForm">
+            <div class="form-group">
+                <label>Sneaker Model Name</label>
+                <input type="text" id="prodName" class="form-control" placeholder="e.g. Air Jordan 4 Retro 'Thunder'" required>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                    <label>Brand</label>
+                    <select id="prodBrand" class="form-control">
+                        <option value="Jordan">Jordan</option>
+                        <option value="Nike">Nike</option>
+                        <option value="Yeezy">Yeezy</option>
+                        <option value="Adidas">Adidas</option>
+                        <option value="New Balance">New Balance</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="prodCategory" class="form-control">
+                        <option value="High-Top">High-Top</option>
+                        <option value="Low-Top">Low-Top</option>
+                        <option value="Retro">Retro</option>
+                        <option value="Running">Running</option>
+                        <option value="Performance Basketball">Performance Basketball</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
+                <div class="form-group">
+                    <label>Price ($ USD)</label>
+                    <input type="number" step="0.01" id="prodPrice" class="form-control" placeholder="199.99" required>
+                </div>
+                <div class="form-group">
+                    <label>Stock Units</label>
+                    <input type="number" id="prodStock" class="form-control" placeholder="10" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Image URL (Unsplash or direct link)</label>
+                <input type="url" id="prodImg" class="form-control" placeholder="https://images.unsplash.com/..." required>
+            </div>
+
+            <div class="form-group">
+                <label>Available Sizes (JSON Array)</label>
+                <input type="text" id="prodSizes" class="form-control" value='["US 7", "US 8", "US 9", "US 10", "US 11"]' required>
+            </div>
+
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="prodDesc" class="form-control" rows="2" placeholder="Product details, colorway, release details..."></textarea>
+            </div>
+
+            <div class="form-group" style="display:flex; align-items:center; gap:0.5rem;">
+                <input type="checkbox" id="prodFeatured" style="width:18px; height:18px;">
+                <label for="prodFeatured" style="margin:0; text-transform:none;">Feature on Store Hero Showcase</label>
+            </div>
+
+            <button type="submit" class="btn-primary" style="width:100%; justify-content:center; padding:0.9rem; margin-top:1rem;">
+                <i class="fa-solid fa-floppy-disk"></i> Save Product to Database
+            </button>
+        </form>
+    </div>
+
+    <!-- Scripts -->
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+</body>
+</html>

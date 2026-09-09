@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In | KICKS AI Sneaker Boutique</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .auth-card {
+            width: 440px;
+            max-width: 95vw;
+            padding: 2.2rem;
+            border-radius: var(--radius-lg);
+            margin: 2rem auto;
+        }
+        .auth-tabs {
+            display: flex;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: var(--radius-full);
+            padding: 0.3rem;
+            margin-bottom: 1.8rem;
+        }
+        .auth-tab {
+            flex: 1;
+            text-align: center;
+            padding: 0.6rem;
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .auth-tab.active {
+            background: var(--accent-orange);
+            color: #FFF;
+            box-shadow: 0 0 15px var(--accent-orange-glow);
+        }
+    </style>
+</head>
+<body style="display:flex; flex-direction:column; justify-content:center; align-items:center; min-height:100vh; padding: 1.5rem;">
+
+    <a href="/" class="brand-logo" style="margin-bottom: 1.5rem;">
+        <i class="fa-solid fa-shoe-prints" style="color:var(--accent-orange);"></i>
+        KICKS<span>.AI</span>
+    </a>
+
+    <div class="glass-panel auth-card">
+        <!-- Auth Tabs -->
+        <div class="auth-tabs">
+            <div class="auth-tab active" id="tabSignIn" onclick="switchTab('signin')">Sign In</div>
+            <div class="auth-tab" id="tabRegister" onclick="switchTab('register')">Register</div>
+            <div class="auth-tab" id="tabReset" onclick="switchTab('reset')">Reset</div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <h2 id="authFormTitle">WELCOME BACK</h2>
+            <p id="authFormSubtitle" style="font-size:0.85rem; color:var(--text-muted); margin-top:0.3rem;">Sign in to access your sneaker account</p>
+        </div>
+
+        <!-- Single Unified Form -->
+        <form id="unifiedAuthForm">
+            <!-- Full Name (Only for Register) -->
+            <div class="form-group" id="groupName" style="display:none;">
+                <label>Full Name</label>
+                <input type="text" id="inputName" class="form-control" placeholder="Prajwal Sharma">
+            </div>
+
+            <!-- Email -->
+            <div class="form-group" id="groupEmail">
+                <label>Email Address</label>
+                <input type="email" id="inputEmail" class="form-control" placeholder="alex@example.com" required>
+            </div>
+
+            <!-- Password -->
+            <div class="form-group" id="groupPassword">
+                <label>Password</label>
+                <input type="password" id="inputPassword" class="form-control" placeholder="••••••••" required>
+            </div>
+
+            <!-- Verification Code (Only for Password Reset) -->
+            <div class="form-group" id="groupCode" style="display:none;">
+                <label>6-Digit Reset Code</label>
+                <input type="text" id="inputCode" class="form-control" placeholder="e.g. 123456">
+            </div>
+
+            <button type="submit" class="btn-primary" id="authSubmitBtn" style="width: 100%; justify-content: center; padding: 0.9rem; margin-top: 1rem;">
+                <i class="fa-solid fa-right-to-bracket"></i> Sign In
+            </button>
+        </form>
+
+        <div id="forgotLinkWrap" style="margin-top: 1.2rem; text-align: center; font-size: 0.85rem;">
+            <a href="javascript:void(0)" onclick="switchTab('reset')" style="color:var(--text-muted);">Forgot your password?</a>
+        </div>
+    </div>
+
+    <script>
+        let currentMode = 'signin';
+
+        function switchTab(mode) {
+            currentMode = mode;
+            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+
+            const groupName = document.getElementById('groupName');
+            const groupPassword = document.getElementById('groupPassword');
+            const groupCode = document.getElementById('groupCode');
+            const submitBtn = document.getElementById('authSubmitBtn');
+            const forgotWrap = document.getElementById('forgotLinkWrap');
+            const title = document.getElementById('authFormTitle');
+            const subtitle = document.getElementById('authFormSubtitle');
+
+            if (mode === 'signin') {
+                document.getElementById('tabSignIn').classList.add('active');
+                title.innerText = "WELCOME BACK";
+                subtitle.innerText = "Sign in to access your sneaker account";
+                groupName.style.display = 'none';
+                groupPassword.style.display = 'block';
+                groupCode.style.display = 'none';
+                forgotWrap.style.display = 'block';
+                submitBtn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> Sign In`;
+            } else if (mode === 'register') {
+                document.getElementById('tabRegister').classList.add('active');
+                title.innerText = "CREATE ACCOUNT";
+                subtitle.innerText = "Join KICKS AI for exclusive sneaker releases";
+                groupName.style.display = 'block';
+                groupPassword.style.display = 'block';
+                groupCode.style.display = 'none';
+                forgotWrap.style.display = 'none';
+                submitBtn.innerHTML = `<i class="fa-solid fa-user-plus"></i> Register Account`;
+            } else if (mode === 'reset') {
+                document.getElementById('tabReset').classList.add('active');
+                title.innerText = "RESET PASSWORD";
+                subtitle.innerText = "Enter email to receive 6-digit reset code";
+                groupName.style.display = 'none';
+                groupPassword.style.display = 'block';
+                groupCode.style.display = 'block';
+                forgotWrap.style.display = 'none';
+                submitBtn.innerHTML = `<i class="fa-solid fa-key"></i> Reset Password`;
+            }
+        }
+
+        document.getElementById('unifiedAuthForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('inputEmail').value.trim();
+            const password = document.getElementById('inputPassword').value;
+            const name = document.getElementById('inputName').value.trim();
+            const code = document.getElementById('inputCode').value.trim();
+
+            if (currentMode === 'signin') {
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email, password })
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        window.location.href = data.redirect || '/';
+                    } else {
+                        alert(data.error || 'Invalid credentials.');
+                    }
+                } catch (err) {
+                    alert('Connection error.');
+                }
+            } else if (currentMode === 'register') {
+                try {
+                    const res = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ name, email, password })
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        alert("🎉 Account created successfully!");
+                        window.location.href = data.redirect || '/';
+                    } else {
+                        alert(data.error || 'Registration failed.');
+                    }
+                } catch (err) {
+                    alert('Connection error.');
+                }
+            } else if (currentMode === 'reset') {
+                if (!code) {
+                    // Request code phase
+                    try {
+                        const res = await fetch('/api/auth/forgot-password', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email })
+                        });
+                        const data = await res.json();
+                        alert(data.message);
+                    } catch (err) {
+                        alert('Connection error.');
+                    }
+                } else {
+                    // Submit new password phase
+                    try {
+                        const res = await fetch('/api/auth/reset-password', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ email, code, new_password: password })
+                        });
+                        const data = await res.json();
+                        if (res.ok) {
+                            alert("✅ Password updated! Please sign in.");
+                            switchTab('signin');
+                        } else {
+                            alert(data.error || 'Password reset failed.');
+                        }
+                    } catch (err) {
+                        alert('Connection error.');
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
